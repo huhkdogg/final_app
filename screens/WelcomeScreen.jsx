@@ -1,26 +1,25 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 export default function WelcomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      {/* Logo Circle */}
-      <View style={styles.logoWrapper}>
-        <View style={styles.logoCircle}>
-          {/* Placeholder Icon or Symbol */}
-          <Text style={styles.logoSymbol}>★</Text>
-        </View>
+      {/* Image at the top */}
+      <Image
+        source={require('../assets/wc.png')} // update path as needed
+        style={styles.image}
+        resizeMode="contain"
+      />
 
-        {/* App Title */}
-        <Text style={styles.title}>
-          Welcome to <Text style={styles.brand}>ExpenseTracker</Text>
-        </Text>
+      {/* App Title */}
+      <Text style={styles.title}>
+        Welcome to <Text style={styles.brand}>ExpenseTracker</Text>
+      </Text>
 
-        {/* Subtitle */}
-        <Text style={styles.subtitle}>Track every cent. Manifest every dream.</Text>
-      </View>
+      {/* Subtitle */}
+      <Text style={styles.subtitle}>Track every cent. Manifest every dream.</Text>
 
-      {/* Button to Navigate */}
+      {/* Button */}
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
         <Text style={styles.buttonText}>Let's start</Text>
       </TouchableOpacity>
@@ -29,7 +28,7 @@ export default function WelcomeScreen({ navigation }) {
       <Text style={styles.termsText}>
         By using this app, you agree to our{' '}
         <Text style={styles.link}>Terms of Use</Text> and{' '}
-        <Text style={styles.link}>Privacy Policy</Text>
+        <Text style={styles.link}>Privacy Policy</Text>.
       </Text>
     </View>
   );
@@ -38,63 +37,53 @@ export default function WelcomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f172a',
+    backgroundColor: '#ffffff', // white background
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
   },
-  logoWrapper: {
-    alignItems: 'center',
-    marginBottom: 40,
-  },
-  logoCircle: {
-    backgroundColor: '#3b82f6',
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  logoSymbol: {
-    color: 'white',
-    fontSize: 32,
-    fontWeight: 'bold',
+  image: {
+    width: 300,
+    height: 300,
+    marginBottom: 30,
   },
   title: {
-    fontSize: 20,
-    color: 'white',
+    fontSize: 22,
+    color: '#000000', // black text
     marginBottom: 8,
+    textAlign: 'center',
   },
   brand: {
     fontWeight: 'bold',
-    color: '#3b82f6',
+    color: '#7c3aed', // deep pastel purple
   },
   subtitle: {
-    color: '#cbd5e1',
+    color: '#4b5563', // softer gray for subtitle
     fontSize: 14,
     textAlign: 'center',
+    marginBottom: 24,
   },
   button: {
-    backgroundColor: '#3b82f6',
+    backgroundColor: '#d8b4fe', // pastel purple
     paddingVertical: 14,
     paddingHorizontal: 40,
-    borderRadius: 8,
-    marginTop: 20,
+    borderRadius: 10,
+    marginTop: 10,
     marginBottom: 20,
+    elevation: 2,
   },
   buttonText: {
-    color: 'white',
+    color: '#000000',
     fontSize: 16,
     fontWeight: '600',
   },
   termsText: {
-    color: '#94a3b8',
+    color: '#6b7280', // muted gray
     fontSize: 12,
     textAlign: 'center',
   },
   link: {
-    color: '#3b82f6',
+    color: '#7c3aed',
     fontWeight: 'bold',
   },
 });
