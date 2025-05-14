@@ -21,7 +21,7 @@ export default function LoginScreen({ navigation }) {
     }
 
     try {
-      const response = await axios.post('http://192.168.1.7:3000/login', {
+      const response = await axios.post('http://192.168.0.24:3000/login', {
         email,
         password,
       });
@@ -42,14 +42,14 @@ export default function LoginScreen({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>Sign in to your account</Text>
 
-      <Text style={styles.label}>Your email</Text>
+      <Text style={styles.label}>Your Email</Text>
       <TextInput
         style={styles.input}
         placeholder="name@cdd.edu.ph"
         keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
-        placeholderTextColor="#64748b"
+        placeholderTextColor="#6b7280" // muted gray
       />
 
       <Text style={styles.label}>Password</Text>
@@ -60,7 +60,7 @@ export default function LoginScreen({ navigation }) {
           secureTextEntry={!showPassword}
           value={password}
           onChangeText={setPassword}
-          placeholderTextColor="#64748b"
+          placeholderTextColor="#6b7280"
         />
         <TouchableOpacity
           onPress={() => setShowPassword(!showPassword)}
@@ -69,16 +69,16 @@ export default function LoginScreen({ navigation }) {
           <MaterialCommunityIcons
             name={showPassword ? 'eye-off' : 'eye'}
             size={20}
-            color="#64748b" // Light blue icon
+            color="#6b7280"
           />
         </TouchableOpacity>
       </View>
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Sign in</Text>
+        <Text style={styles.buttonText}>Sign In</Text>
       </TouchableOpacity>
 
-      <Text style={styles.text}>
+      <Text style={styles.footerText}>
         Don’t have an account yet?{' '}
         <Text style={styles.link} onPress={() => navigation.navigate('Signup')}>
           Sign up
@@ -91,69 +91,76 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f172a',
-    padding: 20,
+    backgroundColor: '#ffffff',
+    padding: 24,
     justifyContent: 'center',
   },
   title: {
-    fontSize: 24,
-    color: 'white',
+    fontSize: 26,
     fontWeight: 'bold',
-    marginBottom: 20,
+    color: '#000000', // black text
+    marginBottom: 24,
+    textAlign: 'center',
   },
   label: {
-    color: 'white',
-    marginBottom: 5,
+    fontSize: 14,
+    color: '#000000', // black text
+    marginBottom: 6,
   },
   input: {
-    backgroundColor: '#1e293b',
-    color: 'white',
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    marginBottom: 15,
+    backgroundColor: '#f3f4f6', // light gray input
+    color: '#000000', // black text
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 10,
     fontSize: 16,
+    marginBottom: 16,
   },
   passwordWrapper: {
     position: 'relative',
     justifyContent: 'center',
-    marginBottom: 15,
+    marginBottom: 16,
   },
   passwordInput: {
-    backgroundColor: '#1e293b',
-    color: 'white',
-    paddingVertical: 10,
-    paddingLeft: 12,
-    paddingRight: 40, // space for icon
-    borderRadius: 8,
+    backgroundColor: '#f3f4f6',
+    color: '#000000',
+    paddingVertical: 12,
+    paddingLeft: 14,
+    paddingRight: 40,
+    borderRadius: 10,
     fontSize: 16,
   },
   iconWrapper: {
     position: 'absolute',
-    right: 10,
+    right: 12,
     top: '50%',
-    transform: [{ translateY: -10 }], // center icon vertically (half of size)
+    transform: [{ translateY: -10 }],
     height: 20,
     width: 20,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   button: {
-    backgroundColor: '#3b82f6',
-    padding: 15,
-    borderRadius: 8,
+    backgroundColor: '#d8b4fe', // pastel purple
+    paddingVertical: 14,
+    borderRadius: 12,
     alignItems: 'center',
-    marginBottom: 10,
+    marginTop: 10,
+    marginBottom: 20,
+    elevation: 2,
   },
   buttonText: {
-    color: 'white',
+    color: '#000000', // black
     fontWeight: 'bold',
+    fontSize: 16,
   },
-  text: {
-    color: 'gray',
+  footerText: {
+    color: '#000000',
     textAlign: 'center',
+    fontSize: 13,
   },
   link: {
-    color: '#3b82f6',
+    color: '#7c3aed', // purple link
+    fontWeight: '600',
   },
 });
