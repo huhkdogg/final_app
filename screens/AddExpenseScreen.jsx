@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
 import axios from 'axios';
 
 export default function AddExpenseScreen({ route, navigation }) {
@@ -10,7 +20,7 @@ export default function AddExpenseScreen({ route, navigation }) {
 
   const fetchBudget = async () => {
     try {
-      const response = await axios.get(`http://192.168.1.7:3000/budget/${userId}`);
+      const response = await axios.get(`http://192.168.0.24:3000/budget/${userId}`);
       setBudget(response.data.available || 0);
     } catch (error) {
       console.error('Failed to fetch budget:', error);
@@ -27,16 +37,14 @@ export default function AddExpenseScreen({ route, navigation }) {
       return;
     }
 
-    const newExpense = {
-      amount: parseFloat(amount),
-      description,
-      type: 'expense',
-      userId,
-    };
-
     try {
-      await axios.post('http://192.168.1.7:3000/transactions', newExpense);
-      await axios.post('http://192.168.1.7:3000/budget/deduct', {
+      await axios.post('http://192.168.0.24:3000/transactions', {
+        amount: parseFloat(amount),
+        description,
+        type: 'expense',
+        userId,
+      });
+      await axios.post('http://192.168.0.24:3000/budget/deduct', {
         userId,
         expense: parseFloat(amount),
       });
@@ -52,43 +60,89 @@ export default function AddExpenseScreen({ route, navigation }) {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Add Expense</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Description"
-        value={description}
-        onChangeText={setDescription}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Amount"
-        value={amount}
-        onChangeText={setAmount}
-        keyboardType="numeric"
-      />
-      <TouchableOpacity style={styles.button} onPress={handleAddExpense}>
-        <Text style={styles.buttonText}>Add Expense</Text>
-      </TouchableOpacity>
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      style={styles.container}
+    >
+      <ScrollView contentContainerStyle={styles.scroll}>
+        <Text style={styles.title}>Add New Expense</Text>
+
+        <Text style={styles.label}>Description</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="e.g. Grocery Shopping"
+          value={description}
+          onChangeText={setDescription}
+          placeholderTextColor="#6b7280"
+        />
+
+        <Text style={styles.label}>Amount</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="e.g. 250.00"
+          value={amount}
+          onChangeText={setAmount}
+          keyboardType="numeric"
+          placeholderTextColor="#6b7280"
+        />
+
+        <TouchableOpacity style={styles.button} onPress={handleAddExpense}>
+          <Text style={styles.buttonText}>Save Expense</Text>
+        </TouchableOpacity>
+
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0f172a', padding: 20 },
-  title: { fontSize: 24, color: 'white', fontWeight: 'bold', marginBottom: 20 },
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  scroll: {
+    padding: 24,
+    justifyContent: 'center',
+    flexGrow: 1,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#000000',
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  label: {
+    fontSize: 14,
+    color: '#000000',
+    marginBottom: 6,
+  },
   input: {
-    backgroundColor: '#1e293b',
-    borderRadius: 8,
-    padding: 10,
-    color: 'white',
-    marginBottom: 15,
+    backgroundColor: '#f3f4f6',
+    color: '#000000',
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    fontSize: 16,
+    marginBottom: 16,
   },
   button: {
-    backgroundColor: '#ef4444',
-    padding: 10,
-    borderRadius: 8,
+    backgroundColor: '#d8b4fe',
+    paddingVertical: 14,
+    borderRadius: 12,
     alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 20,
+    elevation: 2,
   },
-  buttonText: { color: 'white', fontSize: 16, fontWeight: 'bold' },
+  buttonText: {
+    color: '#000000',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  footerText: {
+    color: '#000000',
+    textAlign: 'center',
+    fontSize: 13,
+  },
 });
