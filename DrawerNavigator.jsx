@@ -4,7 +4,7 @@ import {
   createDrawerNavigator,
   DrawerContentScrollView,
   DrawerItemList,
-  DrawerItem
+  DrawerItem,
 } from '@react-navigation/drawer';
 import { View, Text, StyleSheet } from 'react-native';
 import Dashboard from './screens/Dashboard';
@@ -13,22 +13,27 @@ import ProfileScreen from './screens/ProfileScreen';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 
+// Optional: Move this to a constants.js file if you want
+const API_BASE_URL = 'http://192.168.205.31:3000';
+
 const Drawer = createDrawerNavigator();
 
-function CustomDrawerContent(props) {
+function CustomDrawerContent({ userId, navigation, ...props }) {
   const [fullName, setFullName] = useState('');
-  const userId = props.route.params?.userId;
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`http://192.168.1.7:3000/user/${userId}`);
-        const { first_name, last_name } = response.data;
-        setFullName(`${first_name} ${last_name}`);
+        const response = await axios.get(`${API_BASE_URL}/user/${userId}`);
+        const { first_name, last_name } = response.data || {};
+        if (first_name && last_name) {
+          setFullName(`${first_name} ${last_name}`);
+        }
       } catch (err) {
         console.error('Failed to fetch full name:', err);
       }
     };
+
     if (userId) fetchUser();
   }, [userId]);
 
@@ -50,7 +55,12 @@ function CustomDrawerContent(props) {
           icon={({ size }) => (
             <Ionicons name="log-out-outline" size={size} color="#ef4444" />
           )}
-          onPress={() => props.navigation.replace('Login')}
+          onPress={() =>
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'Login' }],
+            })
+          }
         />
       </View>
     </DrawerContentScrollView>
@@ -68,7 +78,7 @@ export default function DrawerNavigator({ route, navigation }) {
 
   if (!userId) {
     return (
-      <View style={{ flex:1, alignItems:'center', justifyContent:'center' }}>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Text>Loading...</Text>
       </View>
     );
@@ -76,7 +86,9 @@ export default function DrawerNavigator({ route, navigation }) {
 
   return (
     <Drawer.Navigator
-      drawerContent={(props) => <CustomDrawerContent {...props} route={{ params: { userId } }} />}
+      drawerContent={(props) => (
+        <CustomDrawerContent {...props} userId={userId} navigation={navigation} />
+      )}
       screenOptions={{
         headerStyle: { backgroundColor: '#0f172a' },
         headerTintColor: '#fff',
