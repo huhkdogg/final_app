@@ -86,10 +86,6 @@ export default function App() {
           component={AddExpenseScreen}
           options={{
             title: "Add Expense",
-            headerStyle: {
-              backgroundColor: "#0f172a",
-            },
-            headerTintColor: "#fff",
           }}
         />
       </Stack.Navigator>
