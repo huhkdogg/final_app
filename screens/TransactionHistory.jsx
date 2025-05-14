@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
@@ -17,7 +16,7 @@ export default function TransactionHistory({ route }) {
 
   const fetchTransactions = async () => {
     try {
-      const response = await axios.get(`http://192.168.1.7:3000/transactions/${userId}`);
+      const response = await axios.get(`http://192.168.0.24:3000/transactions/${userId}`);
       setTransactions(response.data);
     } catch (error) {
       console.error('Error fetching transactions:', error);
@@ -26,9 +25,9 @@ export default function TransactionHistory({ route }) {
 
   const handleDelete = async (id, amount, type) => {
     try {
-      await axios.delete(`http://192.168.1.7:3000/transactions/${id}`);
+      await axios.delete(`http://192.168.0.24:3000/transactions/${id}`);
       if (type === 'expense') {
-        await axios.post(`http://192.168.1.7:3000/budget/restore`, {
+        await axios.post(`http://192.168.0.24:3000/budget/restore`, {
           userId,
           restoreAmount: amount,
         });
@@ -42,11 +41,14 @@ export default function TransactionHistory({ route }) {
 
   const renderItem = ({ item }) => (
     <View style={styles.transactionItem}>
-      <View>
+      <View style={styles.itemContent}>
         <Text style={styles.description}>{item.description}</Text>
         <Text style={styles.amount}>₱{Number(item.amount).toFixed(2)} ({item.type})</Text>
       </View>
-      <TouchableOpacity onPress={() => handleDelete(item.id, item.amount, item.type)}>
+      <TouchableOpacity
+        style={styles.deleteButton}
+        onPress={() => handleDelete(item.id, item.amount, item.type)}
+      >
         <Text style={styles.delete}>Delete</Text>
       </TouchableOpacity>
     </View>
@@ -59,25 +61,61 @@ export default function TransactionHistory({ route }) {
         data={transactions}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
-        contentContainerStyle={{ paddingBottom: 20 }}
+        contentContainerStyle={styles.listContainer}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#0f172a' },
-  title: { fontSize: 24, color: 'white', fontWeight: 'bold', marginBottom: 20 },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#f7f7f7',
+  },
+  title: {
+    fontSize: 24,
+    color: '#333',
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  listContainer: {
+    paddingBottom: 20,
+  },
   transactionItem: {
-    backgroundColor: '#1e293b',
+    backgroundColor: '#ffffff',
     padding: 15,
     borderRadius: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
-  description: { color: 'white', fontSize: 16 },
-  amount: { color: '#fbbf24', fontSize: 16 },
-  delete: { color: '#ef4444', fontWeight: 'bold' },
+  itemContent: {
+    flex: 1,
+  },
+  description: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 5,
+  },
+  amount: {
+    fontSize: 16,
+    color: '#fbbf24',
+  },
+  deleteButton: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    backgroundColor: '#ef4444',
+    borderRadius: 5,
+  },
+  delete: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
 });
