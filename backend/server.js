@@ -93,7 +93,7 @@ app.post("/login", (req, res) => {
 app.get("/budget/:userId", (req, res) => {
   const { userId } = req.params;
   const sql =
-    "SELECT amount AS total, available FROM budget1 WHERE user_id = ? ORDER BY id DESC LIMIT 1";
+    "SELECT amount AS total, available FROM budget1 WHERE user_Id = ? ORDER BY id DESC LIMIT 1";
   db.query(sql, [userId], (err, results) => {
     if (err) return res.status(500).send("Error fetching budget");
     res.json(results[0] || { total: 0, available: 0 });
@@ -115,22 +115,13 @@ app.post("/budget", (req, res) => {
         });
       }
 
-      const deleteTransactions = "DELETE FROM transactions WHERE user_id = ?";
-      db.query(deleteTransactions, [userId], (err) => {
+      db.commit((err) => {
         if (err) {
           return db.rollback(() => {
-            res.status(500).send("Error clearing transactions");
+            res.status(500).send("Error committing transaction");
           });
         }
-
-        db.commit((err) => {
-          if (err) {
-            return db.rollback(() => {
-              res.status(500).send("Error committing transaction");
-            });
-          }
-          res.send("Budget saved and transactions cleared successfully");
-        });
+        res.send("Budget saved successfully");
       });
     });
   });
@@ -154,6 +145,8 @@ app.post("/budget/restore", (req, res) => {
     res.send("Budget restored");
   });
 });
+
+
 
 // Transaction endpoints
 app.get("/transactions/:userId", (req, res) => {
