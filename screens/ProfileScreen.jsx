@@ -31,7 +31,7 @@ export default function ProfileScreen({ route }) {
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get(`http://192.168.1.7:3000/user/${userId}`);
+      const res = await axios.get(`http://192.168.0.24:3000/user/${userId}`);
       const data = res.data;
       setProfile((prev) => ({
         ...prev,
@@ -50,18 +50,21 @@ export default function ProfileScreen({ route }) {
 
   const handleUpdate = async () => {
     try {
-      await axios.put(`http://192.168.1.7:3000/user/update/${userId}`, {
+      console.log('Updating profile...'); // Debug
+      await axios.put(`http://192.168.0.24:3000/user/update/${userId}`, {
         age: profile.age,
         address: profile.address,
         birthday: profile.birthday ? profile.birthday.toISOString().split('T')[0] : null,
         gender: profile.gender,
       });
-      Alert.alert('Profile updated successfully!');
+      
+      Alert.alert('Success', 'Profile updated successfully!');
     } catch (err) {
       console.error('Error updating profile:', err);
-      Alert.alert('Error updating profile.');
+      Alert.alert('Error', 'Failed to update profile. Please try again.');
     }
   };
+  
 
   const handleChangePassword = async () => {
     if (profile.newPassword !== profile.confirmPassword) {
@@ -69,7 +72,7 @@ export default function ProfileScreen({ route }) {
     }
 
     try {
-      await axios.put(`http://192.168.1.7:3000/user/change-password/${userId}`, {
+      await axios.put(`http://192.168.0.24:3000/user/change-password/${userId}`, {
         currentPassword: profile.currentPassword,
         newPassword: profile.newPassword,
       });
@@ -118,7 +121,7 @@ export default function ProfileScreen({ route }) {
       />
 
       <TouchableOpacity style={styles.input} onPress={() => setShowDatePicker(true)}>
-        <Text style={{ color: profile.birthday ? 'white' : '#94a3b8' }}>
+        <Text style={{ color: profile.birthday ? 'black' : '#94a3b8' }}>
           {profile.birthday ? profile.birthday.toDateString() : 'Select your birthday'}
         </Text>
       </TouchableOpacity>
@@ -142,9 +145,9 @@ export default function ProfileScreen({ route }) {
           style={styles.picker}
           onValueChange={(gender) => setProfile({ ...profile, gender })}
         >
-          <Picker.Item label="Select Gender" value="" />
-          <Picker.Item label="Male" value="male" />
-          <Picker.Item label="Female" value="female" />
+           <Picker.Item label="Select Gender" value="" color="#black" />
+           <Picker.Item label="Male" value="male" color="black" />
+           <Picker.Item label="Female" value="female" color="black" />
         </Picker>
       </View>
 
@@ -215,45 +218,71 @@ export default function ProfileScreen({ route }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0f172a' },
-  content: { padding: 20 },
-  title: { fontSize: 24, color: 'white', fontWeight: 'bold', marginBottom: 20 },
-  input: {
-    backgroundColor: '#1e293b',
-    color: 'white',
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 10,
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
   },
-  label: { color: 'white', marginTop: 20, marginBottom: 5 },
+  content: {
+    padding: 24,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#000000',
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  label: {
+    fontSize: 14,
+    color: '#000000',
+    marginBottom: 6,
+    marginTop: 12,
+  },
+  input: {
+    backgroundColor: '#f3f4f6',
+    color: '#000000',
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 10,
+    fontSize: 16,
+    marginBottom: 16,
+  },
   pickerContainer: {
-    backgroundColor: '#1e293b',
-    borderRadius: 8,
-    marginBottom: 10,
+    backgroundColor: '#f3f4f6',
+    borderRadius: 10,
+    marginBottom: 16,
   },
   picker: {
-    color: 'white',
+    color: '#000000',
+    paddingHorizontal: 14,
   },
   saveButton: {
-    backgroundColor: '#10b981',
-    padding: 12,
-    borderRadius: 8,
+    backgroundColor: '#d8b4fe',
+    paddingVertical: 14,
+    borderRadius: 12,
     alignItems: 'center',
     marginTop: 10,
+    marginBottom: 20,
+    elevation: 2,
   },
-  saveButtonText: { color: 'white', fontWeight: 'bold' },
+  saveButtonText: {
+    color: '#000000',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
   passwordWrapper: {
     position: 'relative',
-    marginBottom: 10,
+    justifyContent: 'center',
+    marginBottom: 16,
   },
   iconWrapper: {
     position: 'absolute',
-    right: 10,
+    right: 12,
     top: '50%',
     transform: [{ translateY: -10 }],
     height: 20,
     width: 20,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
   },
 });
